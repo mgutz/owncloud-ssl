@@ -5,13 +5,18 @@
 #
 # Instructions:
 #
-# 1. Edit IP_ADDR and HOST_NAME
-# 2. Copy to your server
-#    scp install-owncloud-server root@YOUR_SERVER:~
-# 3. SSH in then run `bash install-owncloud-server`
-# 4. Browse https://YOUR_SERVER/owncloud to set admin password
+# 1. Get the script
+#
+#    wget https://raw.github.com/mgutz/owncloud-ssl/master/install-owncloud-server
+#
+# 2. Edit IPADDR and HOST_NAME in install-owncloud-server
+# 3. Run the script
+#
+#    bash install-owncloud-server
+#
+# 4. Browse https://IPADDR/owncloud to set admin password
 # 5. Click on settings icon (the cog at bottom) and add a normal user
-# 6. You should be able to use any client now.
+# 6. Download a client from owncloud.org
 #==============================================================================
 
 

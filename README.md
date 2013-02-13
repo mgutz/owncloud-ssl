@@ -1,7 +1,7 @@
 # owncloud-ssl
 
 Installs [owncloud](http://owncloud.org), an open source DropBox clone, onto
-a Debian server with SSL certificate.
+a Debian-based server with SSL certificate.
 
 ## Motivation
 
@@ -12,13 +12,31 @@ I use a $7/mo 250GB, 256M RAM storage plan from [BuyVM](http://buyvm.net) runnin
 
 ## How To
 
-BEWARE the current version of ownCloud server is tweaking server-side encryption.
-The next version promises to be better. Server-side encryption is not enabled
-at this time.
+Log into your remote server
 
-Edit IP_ADDR and HOST_NAME variables in `install-owncloud-server`, then
-from local terminal
+Download the script
 
-    cat install-owncloud-server | ssh root@IP_ADDR /bin/bash
+    wget https://raw.github.com/mgutz/owncloud-ssl/master/install-owncloud-server
 
-which runs `install-owncloud-server` script on your remote server.
+Edit IP_ADDR and HOST_NAME variables in `install-owncloud-server`
+
+On Ubuntu (recommended with encrypted partition), 50MB RAM footprint
+
+    sudo bash install-owncloud-server
+
+Or Debian (as root), ~40MB RAM footprint
+
+    bash install-owncloud-server
+
+
+## Server Side Encryption
+
+BEWARE, OwnCloud server side encryption is disabled because it is known to have issues
+and is being addressed in the next major version.
+
+My suggestion is to not deal with it and install ownCloud on Ubuntu Server 12.04 or
+greater and use encrypted LVM partiation when installing the OS. Your entire
+server data then is safe from prying eyes as they will only see gibberish
+including file and directory names. Encryption comes with a huge performance cost
+which is more than acceptable.
+
