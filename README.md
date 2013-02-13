@@ -8,7 +8,7 @@ a Debian server with SSL certificate.
 This is my data. There are many like it, but this one is mine! ... Without
 my data, I am useless.
 
-I use a $7/mo 250GB, 256M RAM storage plan from [BuyVM](buyvm.net) running Debian 6.06.
+I use a $7/mo 250GB, 256M RAM storage plan from [BuyVM](http://buyvm.net) running Debian 6.06.
 
 ## How To
 
