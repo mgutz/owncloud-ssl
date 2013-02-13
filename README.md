@@ -35,8 +35,9 @@ BEWARE, OwnCloud server side encryption is disabled because it is known to have 
 and is being addressed in the next major version.
 
 My suggestion is to not deal with it and install ownCloud on Ubuntu Server 12.04 or
-greater and use encrypted LVM partiation when installing the OS. Your entire
-server data then is safe from prying eyes as they will only see gibberish
-including file and directory names. Encryption comes with a huge performance cost
-which is more than acceptable.
+greater and use encrypted LVM partition when installing the OS. Your entire
+server data then is safe from prying eyes as hackers and even your hosting
+provider will only see gibberish including file and directory names.
+Encryption comes with a huge performance cost which is more than acceptable
+for privacy.
 
