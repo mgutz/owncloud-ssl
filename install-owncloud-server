@@ -1,0 +1,102 @@
+#!/bin/bash
+
+#==============================================================================
+# Installs owncloud server with a self signed certificate.
+#
+# Instructions:
+#
+# 1. Edit IP_ADDR and HOST_NAME
+# 2. Copy to your server
+#    scp install-owncloud-server root@YOUR_SERVER:~
+# 3. SSH in then run `bash install-owncloud-server`
+# 4. Browse https://YOUR_SERVER/owncloud to set admin password
+# 5. Click on settings icon (the cog at bottom) and add a normal user
+# 6. You should be able to use any client now.
+#==============================================================================
+
+
+IPADDR=192.168.221.187
+HOST_NAME=cabinet.mgutz.com
+
+
+function lockdown {
+    apt-get install fail2ban
+    cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+    /etc/init.d/fail2ban restart
+}
+
+
+function install_owncloud {
+    wget http://download.opensuse.org/repositories/isv:ownCloud:community/Debian_6.0/Release.key
+    apt-key add - < Release.key
+
+
+    echo 'deb http://download.opensuse.org/repositories/isv:ownCloud:community/Debian_6.0/ /' >> /etc/apt/sources.list.d/owncloud.list
+    apt-get update
+    apt-get install -y owncloud
+}
+
+
+function config_owncloud {
+    local CERT=/etc/ssl/private/owncloud
+
+    # enable apache features needed by the config script
+    a2enmod rewrite
+    a2enmod headers
+    a2enmod ssl
+
+    # create self-signed SSL cert
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $CERT.key -out $CERT.crt -subj "/C=US/ST=CA/L=San Diego/O=Dis/CN=$HOST_NAME"
+
+    # configure own cloud in apache using ssl cert generated above
+    cat <<CONFIG > /etc/apache2/sites-available/owncloud
+<VirtualHost $IPADDR:80>
+    ServerName          $HOST_NAME
+    ServerAlias         owncloud $HOST_NAME
+    RedirectMatch       permanent (.*) https://$HOST_NAME\$1
+</VirtualHost>
+
+<VirtualHost $IPADDR:443>
+    ServerName          $HOST_NAME
+    DocumentRoot        /var/www
+
+    SSLEngine               on
+    SSLCertificateFile      $CERT.crt
+    SSLCertificateKeyFile   $CERT.key
+</VirtualHost>
+
+<Directory "/var/www/owncloud/">
+     Options FollowSymLinks Indexes MultiViews
+     AllowOverride Options FileInfo AuthConfig
+     Order allow,deny
+     Allow from all
+</Directory>
+CONFIG
+
+    # enable the new configuration
+    ln -s /etc/apache2/sites-available/owncloud /etc/apache2/sites-enabled
+}
+
+
+function main {
+    install_owncloud
+    config_owncloud
+    /etc/init.d/apache2 restart
+
+cat <<MSG
+
+OwnCloud Server with SSL installed. To use
+
+1. Browse https://$IPADDR/owncloud to create admin account.
+2. Click on settings cog icon at bottom to add a non-admin user.
+3. Download a client from http://owncloud.org/support/install/
+4. Once installed sync to https://$IPADDR/owncloud using secure connection.
+
+MSG
+}
+
+main
+
+unset IPADDR
+unset HOST_NAME
+
